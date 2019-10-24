@@ -4,6 +4,12 @@ const moment = require('moment');
 const queries = require('../db/queries');
 const express = require("express");
 let router = express.Router();
+const {
+  hashPassword,
+  comparePassword,
+  isValidEmail,
+  generateToken
+} = require('../helpers/authHelpers');
 
 dotenv.config();
 

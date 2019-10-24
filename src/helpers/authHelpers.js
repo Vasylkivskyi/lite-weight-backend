@@ -1,5 +1,5 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const hashPassword = (password) => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
