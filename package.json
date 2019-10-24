@@ -5,16 +5,20 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "migrate": "node migrations createAllTables",
+    "rollback": "node migrations dropAllTables"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.6",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "make-runnable": "^1.3.6",
     "moment": "^2.24.0",
     "pg": "^7.12.1"
   }

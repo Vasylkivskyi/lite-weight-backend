@@ -20,11 +20,11 @@ pool.on('connect', () => {
 });
 
 router.post('/', async (req, res) => {
-  const { email, password } = req.body;
-  if (!email && !password) {
+  const { firstName, lastName, email, password } = req.body;
+  if (!firstName && !lastName && !email && !password) {
     return res.status(400).send({ 'message': 'Some value are missing...' });
   }
-  const values = [email, password, moment(new Date()), moment(new Date())];
+  const values = [firstName, lastName, email, password, moment(new Date()), moment(new Date())];
   console.log('query: ', queries.createUser());
   console.log('values: ', values);
   const result = await pool.query(queries.createUser(), values);

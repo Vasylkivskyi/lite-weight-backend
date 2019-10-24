@@ -1,7 +1,7 @@
 const createUser = () => {
   return `INSERT INTO
-  users(email, password, created_date, updated_date)
-  VALUES($1, $2, $3, $4)
+  users(first_name, last_name, email, password, created_date, modified_date)
+  VALUES($1, $2, $3, $4, $5, $6)
   returning *`;
 }
 
