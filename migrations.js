@@ -24,6 +24,7 @@ const createUserTable = () => {
         last_name VARCHAR(128) NOT NULL,
         email VARCHAR(128) UNIQUE NOT NULL,
         password VARCHAR(128) NOT NULL,
+        is_verified SMALLINT DEFAULT 0,
         created_date TIMESTAMP,
         modified_date TIMESTAMP
       )`;
