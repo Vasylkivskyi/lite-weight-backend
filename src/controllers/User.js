@@ -8,7 +8,8 @@ const {
   hashPassword,
   comparePassword,
   isValidEmail,
-  generateToken
+  generateToken,
+  verifyToken
 } = require('../helpers/authHelpers');
 
 dotenv.config();
@@ -19,10 +20,6 @@ const pool = new Pool({
   database: 'lite_weight',
   password: '',
   port: '5432',
-});
-
-pool.on('connect', () => {
-  console.log('connected to the db');
 });
 
 router.post('/', async (req, res) => {
@@ -45,7 +42,6 @@ router.post('/', async (req, res) => {
     moment(new Date()),
     moment(new Date())
   ];
-
   try {
     const { rows } = await pool.query(queries.createUser(), values);
     const token = generateToken(rows[0].id);
@@ -72,6 +68,13 @@ router.post('/login', async (req, res) => {
   try {
     const { rows } = await pool.query(queries.getUserByEmail(), [email]);
     if (!rows.length) {
+      return res.status(400).send({ 'message': 'User not exists' });
+    }
+
+    if (!comparePassword(password, rows[0].password)) {
+      return res.status(400).send({ 'message': 'You have entered an invalid username or password' });
+    }
+    if (!rows.length) {
       return res.status(400).send({ 'message': 'User with current email is not exists' })
     }
     const token = generateToken(rows[0].id);
@@ -79,7 +82,38 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     return res.status(400).send(error)
   }
+});
 
+router.post('/edit', async (req, res) => {
+  let token = req.headers['x-access-token'];
+  const { firstName, lastName, email, password } = req.body;
+  const decoded = verifyToken(token);
+  if (!decoded) {
+    res.status(400).send({ 'message': 'Token has been expired' });
+  }
+  const { userId } = decoded;
+  const hashedPassword = hashPassword(password);
+  const values = [
+    firstName,
+    lastName,
+    email,
+    hashedPassword,
+    moment(new Date()),
+    userId
+  ];
+  const { rows } = await pool.query(queries.editUser(), values);
+  res.status(200).send({ newUser: rows[0] });
+});
+
+router.delete('/delete', async (req, res) => {
+  let token = req.headers['x-access-token'];
+  const decoded = verifyToken(token);
+  if (!decoded) {
+    res.status(400).send({ 'message': 'Token has been expired' });
+  }
+  const { userId } = decoded;
+  await pool.query(queries.deleteUser(), [userId]);
+  res.status(200).send({ 'message': 'User was successfully deleted' });
 })
 
 module.exports = router;

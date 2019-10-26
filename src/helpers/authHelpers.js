@@ -17,9 +17,18 @@ const generateToken = (id) => {
   const token = jwt.sign({
     userId: id
   },
-    process.env.SECRET, { expiresIn: '7d' }
+    process.env.SECRET, { expiresIn: '1d' }
   );
   return token;
+}
+
+const verifyToken = (token) => {
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET)
+    return decoded;
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 module.exports = {
@@ -27,4 +36,5 @@ module.exports = {
   comparePassword,
   isValidEmail,
   generateToken,
+  verifyToken,
 }
