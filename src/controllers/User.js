@@ -7,7 +7,6 @@ let router = express.Router();
 const {
   hashPassword,
   comparePassword,
-  comparePasswordLength,
   isValidEmail,
   generateToken
 } = require('../helpers/authHelpers');
@@ -55,8 +54,32 @@ router.post('/', async (req, res) => {
     if (error.routine === '_bt_check_unique') {
       return res.status(400).send({ 'message': 'User with that EMAIL already exist' })
     }
-    return res.status(400).send(err);
+    return res.status(400).send(error);
   }
 });
+
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!(!!email && !!password)) {
+    return res.status(400).send({ 'message': 'Some value are missing...' });
+  }
+
+  if (!isValidEmail(req.body.email)) {
+    return res.status(400).send({ 'message': 'Please enter valid email' })
+  }
+
+  try {
+    const { rows } = await pool.query(queries.getUserByEmail(), [email]);
+    if (!rows.length) {
+      return res.status(400).send({ 'message': 'User with current email is not exists' })
+    }
+    const token = generateToken(rows[0].id);
+    return res.status(200).send({ token })
+  } catch (error) {
+    return res.status(400).send(error)
+  }
+
+})
 
 module.exports = router;

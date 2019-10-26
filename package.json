@@ -7,7 +7,7 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "migrate": "node migrations createAllTables",
-    "rollback": "node migrations dropAllTables"
+    "drop": "node migrations dropAllTables"
   },
   "keywords": [],
   "author": "",

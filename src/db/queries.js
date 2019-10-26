@@ -5,8 +5,11 @@ const createUser = () => {
   returning *`;
 }
 
+const getUserByEmail = () => `SELECT * FROM users WHERE email = $1`;
+
 module.exports = {
   createUser,
+  getUserByEmail,
 }
 
 
