@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
   const decoded = verifyToken(token);
 
   if (!decoded) {
-    res.status(400).send({ 'message': 'Token has been expired' });
+    return res.status(400).send({ 'message': 'Token has been expired' });
   }
   const { userId } = decoded;
 
@@ -44,12 +44,12 @@ router.post('/', async (req, res) => {
 
   const { rows } = await pool.query(queries.getExerciseByName(), values);
   if (rows.length) {
-    res.status(400).send({ 'message': 'Exercise already exist' });
+    return res.status(400).send({ 'message': 'Exercise already exist' });
   };
 
   const queryResult = await pool.query(queries.createExercise(), values);
 
-  res.status(200).send({ queryResult: queryResult.rows[0] });
+  return res.status(200).send({ queryResult: queryResult.rows[0] });
 });
 
 module.exports = router;
