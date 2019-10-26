@@ -7,15 +7,6 @@ const createUser = () => {
 
 const getUserByEmail = () => `SELECT * FROM users WHERE email = $1`;
 
-// UPDATE link
-// SET description = 'Learn PostgreSQL fast and easy',
-//  rel = 'follow'
-// WHERE
-//    ID = 1
-// RETURNING id,
-//    description,
-//    rel;
-
 const editUser = () => `UPDATE users
 SET first_name = $1,
 last_name = $2,
@@ -27,11 +18,32 @@ RETURNING *`;
 
 const deleteUser = () => `DELETE FROM users WHERE id = $1 RETURNING *`;
 
+const createExercise = () => `INSERT INTO
+exercises(name, owner_id)
+VALUES($1, $2) returning *`;
+
+const getExerciseByName = () => `SELECT * FROM exercises WHERE name = $1
+AND owner_id = $2`;
+
+const getAllExercises = () => `SELECT * FROM exercises WHERE owner_id = $1`;
+
+const editExercise = () => `UPDATE exercises
+SET name = $1
+WHERE id = $2 AND owner_id = $3
+RETURNING *`;
+
+const deleteExercise = () => `DELETE FROM exercises WHERE id = $1 AND owner_id = $2 RETURNING *`;
+
 module.exports = {
   createUser,
   getUserByEmail,
   editUser,
   deleteUser,
+  createExercise,
+  getAllExercises,
+  getExerciseByName,
+  editExercise,
+  deleteExercise,
 }
 
 
