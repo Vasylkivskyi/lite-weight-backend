@@ -53,12 +53,46 @@ const dropUserTable = () => {
     });
 }
 
+const createExercisesTable = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS
+  exercises(
+    id SERIAL NOT NULL PRIMARY KEY,
+    name VARCHAR(128) NOT NULL,
+    owner_id INTEGER NOT NULL,
+    FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
+  )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+}
+
+const dropExercisesTable = () => {
+  const queryText = 'DROP TABLE IF EXISTS exercises';
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+}
+
 const createAllTables = () => {
   createUserTable();
+  createExercisesTable();
 }
 
 const dropAllTables = () => {
   dropUserTable();
+  dropExercisesTable();
 }
 
 pool.on('remove', () => {
@@ -69,6 +103,8 @@ pool.on('remove', () => {
 module.exports = {
   createUserTable,
   createAllTables,
+  createExercisesTable,
+  dropExercisesTable,
   dropUserTable,
   dropAllTables
 };
