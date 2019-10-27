@@ -87,7 +87,7 @@ router.post('/edit', Auth.verifyToken, async (req, res) => {
 
   try {
     const { rows } = await db.query(queries.editUser(), values);
-    res.status(200).send({ newUser: rows[0] });
+    return res.status(200).send({ newUser: rows[0] });
   } catch (error) {
     return res.status(400).send(error);
   }
@@ -96,7 +96,7 @@ router.post('/edit', Auth.verifyToken, async (req, res) => {
 router.delete('/delete', Auth.verifyToken, async (req, res) => {
   try {
     await db.query(queries.deleteUser(), [req.user.userId]);
-    res.status(200).send({ 'message': 'User was successfully deleted' });
+    return res.status(200).send({ 'message': 'User was successfully deleted' });
   } catch (error) {
     return res.status(400).send(error);
   }

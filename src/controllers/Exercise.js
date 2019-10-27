@@ -47,10 +47,20 @@ router.put('/:id', Auth.verifyToken, async (req, res) => {
   ];
   try {
     const { rows } = await db.query(queries.editExercise(), values);
-    res.send({ rows });
+    return res.send({ rows });
   } catch (error) {
     return res.status(400).send(error);
   }
 });
+
+router.delete('/:id', Auth.verifyToken, async (req, res) => {
+  try {
+    const result = await db.query(queries.deleteExercise(), [req.params.id, req.user.userId]);
+    console.log(result);
+    res.status(200).send({ 'message': 'Exercise was successfully deleted...' })
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+})
 
 module.exports = router;
