@@ -55,8 +55,8 @@ router.put('/:id', Auth.verifyToken, async (req, res) => {
 
 router.delete('/:id', Auth.verifyToken, async (req, res) => {
   try {
-    const result = await db.query(queries.deleteExercise(), [req.params.id, req.user.userId]);
-    console.log(result);
+    await db.query(queries.deleteExercise(), [req.params.id, req.user.userId]);
+
     res.status(200).send({ 'message': 'Exercise was successfully deleted...' })
   } catch (error) {
     return res.status(400).send(error);
