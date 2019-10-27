@@ -1,26 +1,15 @@
-const { Pool } = require('pg');
-const dotenv = require('dotenv');
 const moment = require('moment');
 const queries = require('../db/queries');
 const express = require("express");
-let router = express.Router();
+const router = express.Router();
+const db = require('../../db');
+const Auth = require('../middleware/Auth');
 const {
   hashPassword,
   comparePassword,
   isValidEmail,
   generateToken,
-  verifyToken
 } = require('../helpers/authHelpers');
-
-dotenv.config();
-
-const pool = new Pool({
-  user: 'pavelvasylkivskiy',
-  host: 'localhost',
-  database: 'lite_weight',
-  password: '',
-  port: '5432',
-});
 
 router.post('/', async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -43,7 +32,7 @@ router.post('/', async (req, res) => {
     moment(new Date())
   ];
   try {
-    const { rows } = await pool.query(queries.createUser(), values);
+    const { rows } = await db.query(queries.createUser(), values);
     const token = generateToken(rows[0].id);
     return res.status(201).send({ token });
   } catch (error) {
@@ -66,7 +55,7 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    const { rows } = await pool.query(queries.getUserByEmail(), [email]);
+    const { rows } = await db.query(queries.getUserByEmail(), [email]);
     if (!rows.length) {
       return res.status(400).send({ 'message': 'User not exists' });
     }
@@ -84,14 +73,8 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/edit', async (req, res) => {
-  let token = req.headers['x-access-token'];
+router.post('/edit', Auth.verifyToken, async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
-  const decoded = verifyToken(token);
-  if (!decoded) {
-    res.status(400).send({ 'message': 'Token has been expired' });
-  }
-  const { userId } = decoded;
   const hashedPassword = hashPassword(password);
   const values = [
     firstName,
@@ -99,20 +82,14 @@ router.post('/edit', async (req, res) => {
     email,
     hashedPassword,
     moment(new Date()),
-    userId
+    req.user.userId
   ];
-  const { rows } = await pool.query(queries.editUser(), values);
+  const { rows } = await db.query(queries.editUser(), values);
   res.status(200).send({ newUser: rows[0] });
 });
 
-router.delete('/delete', async (req, res) => {
-  let token = req.headers['x-access-token'];
-  const decoded = verifyToken(token);
-  if (!decoded) {
-    res.status(400).send({ 'message': 'Token has been expired' });
-  }
-  const { userId } = decoded;
-  await pool.query(queries.deleteUser(), [userId]);
+router.delete('/delete', Auth.verifyToken, async (req, res) => {
+  await db.query(queries.deleteUser(), [req.user.userId]);
   res.status(200).send({ 'message': 'User was successfully deleted' });
 })
 

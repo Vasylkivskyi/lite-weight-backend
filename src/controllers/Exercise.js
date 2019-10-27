@@ -1,53 +1,27 @@
-const { Pool } = require('pg');
-const dotenv = require('dotenv');
-const moment = require('moment');
 const queries = require('../db/queries');
 const express = require("express");
-let router = express.Router();
-const {
-  hashPassword,
-  comparePassword,
-  isValidEmail,
-  generateToken,
-  verifyToken
-} = require('../helpers/authHelpers');
+const router = express.Router();
+const db = require('../../db');
+const Auth = require('../middleware/Auth');
 
-dotenv.config();
-
-const pool = new Pool({
-  user: 'pavelvasylkivskiy',
-  host: 'localhost',
-  database: 'lite_weight',
-  password: '',
-  port: '5432',
-});
-
-router.post('/', async (req, res) => {
+router.post('/', Auth.verifyToken, async (req, res) => {
   const { name } = req.body;
-  let token = req.headers['x-access-token'];
   console.log(name)
   if (!name) {
     return res.status(400).send({ 'message': 'Name is missing...' });
   }
 
-  const decoded = verifyToken(token);
-
-  if (!decoded) {
-    return res.status(400).send({ 'message': 'Token has been expired' });
-  }
-  const { userId } = decoded;
-
   const values = [
     name,
-    userId
-  ]
+    req.user.userId
+  ];
 
-  const { rows } = await pool.query(queries.getExerciseByName(), values);
+  const { rows } = await db.query(queries.getExerciseByName(), values);
   if (rows.length) {
     return res.status(400).send({ 'message': 'Exercise already exist' });
   };
 
-  const queryResult = await pool.query(queries.createExercise(), values);
+  const queryResult = await db.query(queries.createExercise(), values);
 
   return res.status(200).send({ queryResult: queryResult.rows[0] });
 });
