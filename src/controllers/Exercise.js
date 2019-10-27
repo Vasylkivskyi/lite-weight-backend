@@ -26,4 +26,12 @@ router.post('/', Auth.verifyToken, async (req, res) => {
   return res.status(200).send({ queryResult: queryResult.rows[0] });
 });
 
+router.get('/', Auth.verifyToken, async (req, res) => {
+  const { rows } = await db.query(queries.getAllExercises(), [req.user.userId]);
+  if (!rows.length) {
+    return res.status(400).send({ 'message': 'Where is no exercises yet...' });
+  }
+  return res.status(200).send({ rows });
+})
+
 module.exports = router;
