@@ -69,7 +69,7 @@ router.post('/login', async (req, res) => {
     const token = generateToken(rows[0].id);
     return res.status(200).send({ token })
   } catch (error) {
-    return res.status(400).send(error)
+    return res.status(400).send(error);
   }
 });
 
@@ -84,13 +84,22 @@ router.post('/edit', Auth.verifyToken, async (req, res) => {
     moment(new Date()),
     req.user.userId
   ];
-  const { rows } = await db.query(queries.editUser(), values);
-  res.status(200).send({ newUser: rows[0] });
+
+  try {
+    const { rows } = await db.query(queries.editUser(), values);
+    res.status(200).send({ newUser: rows[0] });
+  } catch (error) {
+    return res.status(400).send(error);
+  }
 });
 
 router.delete('/delete', Auth.verifyToken, async (req, res) => {
-  await db.query(queries.deleteUser(), [req.user.userId]);
-  res.status(200).send({ 'message': 'User was successfully deleted' });
+  try {
+    await db.query(queries.deleteUser(), [req.user.userId]);
+    res.status(200).send({ 'message': 'User was successfully deleted' });
+  } catch (error) {
+    return res.status(400).send(error);
+  }
 })
 
 module.exports = router;
