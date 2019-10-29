@@ -19,8 +19,8 @@ router.post('/', Auth.verifyToken, async (req, res) => {
   });
 
   try {
-    inserts.forEach((insert) => {
-      const { rows } = db.query(queries.createSet(), insert);
+    inserts.forEach(async (values) => {
+      await db.query(queries.createSet(), values);
     });
     return res.status(200).send({ 'message': 'Your workout is save...' });
   } catch (error) {
