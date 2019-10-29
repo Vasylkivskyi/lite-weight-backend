@@ -85,14 +85,53 @@ const dropExercisesTable = () => {
     });
 }
 
+const createSetsTable = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS
+  sets(
+    id SERIAL NOT NULL PRIMARY KEY,
+    exercise_name VARCHAR(128) NOT NULL,
+    reps SMALLINT,
+    weight SMALLINT,
+    working_time SMALLINT,
+    rest_time SMALLINT,
+    created_date TIMESTAMP,
+    owner_id INTEGER NOT NULL,
+    FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
+  )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+}
+
+const dropSetsTable = () => {
+  const queryText = 'DROP TABLE IF EXISTS sets';
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+}
+
 const createAllTables = () => {
   createUserTable();
   createExercisesTable();
+  createSetsTable();
 }
 
 const dropAllTables = () => {
   dropUserTable();
   dropExercisesTable();
+  dropSetsTable();
 }
 
 pool.on('remove', () => {
@@ -104,9 +143,11 @@ module.exports = {
   createUserTable,
   createAllTables,
   createExercisesTable,
-  dropExercisesTable,
+  createSetsTable,
   dropUserTable,
-  dropAllTables
+  dropAllTables,
+  dropExercisesTable,
+  dropSetsTable,
 };
 
 require('make-runnable');
