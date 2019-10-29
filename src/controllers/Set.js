@@ -7,6 +7,7 @@ const moment = require('moment');
 
 router.post('/', Auth.verifyToken, async (req, res) => {
   // ATTENTION !!! Need to verify exercise name & num of reps on frontend
+  // Expecting an array of data
   const inserts = req.body.map((set) => {
     return [
       set.exercise_name,
