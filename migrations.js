@@ -15,7 +15,7 @@ pool.on('connect', () => {
   console.log('connected to the db');
 });
 
-const createUserTable = () => {
+const createUsersTable = () => {
   const queryText =
     `CREATE TABLE IF NOT EXISTS
       users(
@@ -40,7 +40,7 @@ const createUserTable = () => {
     });
 }
 
-const dropUserTable = () => {
+const dropUsersTable = () => {
   const queryText = 'DROP TABLE IF EXISTS users';
   pool.query(queryText)
     .then((res) => {
@@ -90,10 +90,8 @@ const createSetsTable = () => {
   sets(
     id SERIAL NOT NULL PRIMARY KEY,
     exercise_name VARCHAR(128) NOT NULL,
-    reps SMALLINT,
+    reps SMALLINT NOT NULL,
     weight SMALLINT,
-    working_time SMALLINT,
-    rest_time SMALLINT,
     created_date TIMESTAMP,
     owner_id INTEGER NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
@@ -123,13 +121,13 @@ const dropSetsTable = () => {
 }
 
 const createAllTables = () => {
-  createUserTable();
+  createUsersTable();
   createExercisesTable();
   createSetsTable();
 }
 
 const dropAllTables = () => {
-  dropUserTable();
+  dropUsersTable();
   dropExercisesTable();
   dropSetsTable();
 }
@@ -140,11 +138,11 @@ pool.on('remove', () => {
 });
 
 module.exports = {
-  createUserTable,
+  createUsersTable,
   createAllTables,
   createExercisesTable,
   createSetsTable,
-  dropUserTable,
+  dropUsersTable,
   dropAllTables,
   dropExercisesTable,
   dropSetsTable,
