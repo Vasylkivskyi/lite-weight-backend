@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const pool = new Pool({
-  user: 'pavelvasylkivskiy',
+  user: 'pavelvasylkivskiy', //'Pavlo2',
   host: 'localhost',
   database: 'lite_weight',
   password: '',

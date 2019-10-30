@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 const dotenv = require('dotenv');
 
 const pool = new Pool({
-  user: 'pavelvasylkivskiy',
+  user: 'pavelvasylkivskiy',//'Pavlo2',
   host: 'localhost',
   database: 'lite_weight',
   password: '',
