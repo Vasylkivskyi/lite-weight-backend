@@ -41,7 +41,7 @@ const deleteExercise = () => `DELETE FROM exercises WHERE id = $1 AND owner_id =
 // SETS
 const createSet = () => `INSERT INTO
 sets(exercise_name, reps, weight, owner_id, created_date)
-VALUES($1, $2, $3, $4, $5)
+VALUES %L
 RETURNING *`
 
 module.exports = {

@@ -28,8 +28,8 @@ router.post('/', async (req, res) => {
     lastName,
     email,
     hashedPassword,
-    moment(new Date()),
-    moment(new Date())
+    moment().format(),
+    moment().format()
   ];
   try {
     const { rows } = await db.query(queries.createUser(), values);
@@ -81,7 +81,7 @@ router.post('/edit', Auth.verifyToken, async (req, res) => {
     lastName,
     email,
     hashedPassword,
-    moment(new Date()),
+    moment().format(),
     req.user.userId
   ];
 
