@@ -40,6 +40,16 @@ router.get('/', Auth.verifyToken, async (req, res) => {
   } catch (error) {
     return res.status(400).send(error);
   }
+});
+
+router.delete('/', Auth.verifyToken, async (req, res) => {
+  const { userId } = req.user;
+  try {
+    await db.query(queries.deleteAllUserSets(), [userId]);
+    return res.status(200).send({ 'message': 'Your progress was deleted...' });
+  } catch (error) {
+    return res.status(400).send(error);
+  }
 })
 
 module.exports = router;

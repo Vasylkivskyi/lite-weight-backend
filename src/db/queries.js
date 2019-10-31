@@ -49,6 +49,8 @@ WHERE owner_id = $1
 ORDER BY created_date DESC
 LIMIT 100`;
 
+const deleteAllUserSets = () => `DELETE FROM sets WHERE owner_id = $1`;
+
 module.exports = {
   createUser,
   getUserByEmail,
@@ -61,6 +63,7 @@ module.exports = {
   deleteExercise,
   createSet,
   getLatestSets,
+  deleteAllUserSets,
 }
 
 
