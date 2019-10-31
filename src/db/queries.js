@@ -42,7 +42,12 @@ const deleteExercise = () => `DELETE FROM exercises WHERE id = $1 AND owner_id =
 const createSet = () => `INSERT INTO
 sets(exercise_name, reps, weight, owner_id, created_date)
 VALUES %L
-RETURNING *`
+RETURNING *`;
+
+const getLatestSets = () => `SELECT * FROM sets
+WHERE owner_id = $1
+ORDER BY created_date DESC
+LIMIT 100`;
 
 module.exports = {
   createUser,
@@ -55,6 +60,7 @@ module.exports = {
   editExercise,
   deleteExercise,
   createSet,
+  getLatestSets,
 }
 
 

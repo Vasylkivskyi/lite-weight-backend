@@ -25,6 +25,21 @@ router.post('/', Auth.verifyToken, async (req, res) => {
   } catch (error) {
     return res.status(400).send(error);
   }
+});
+
+router.get('/', Auth.verifyToken, async (req, res) => {
+  const { userId } = req.user;
+  try {
+    const { rows } = await db.query(queries.getLatestSets(), [userId]);
+    if (!rows.length) {
+      return res.status(400).send({ 'message': "You was so lazy and you don't get workouts yet" });
+    }
+    const dayOfTheWeek = rows[0].created_date.getDate();
+    const latestExercises = rows.filter((ex) => ex.created_date.getDate() === dayOfTheWeek);
+    return res.status(200).send({ latestExercises });
+  } catch (error) {
+    return res.status(400).send(error);
+  }
 })
 
 module.exports = router;
