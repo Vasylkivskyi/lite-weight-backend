@@ -1,5 +1,5 @@
 const queries = require('../db/queries');
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const db = require('../../db');
 const Auth = require('../middleware/Auth');
@@ -7,19 +7,16 @@ const Auth = require('../middleware/Auth');
 router.post('/', Auth.verifyToken, async (req, res) => {
   const { name } = req.body;
   if (!name) {
-    return res.status(400).send({ 'message': 'Name is missing...' });
+    return res.status(400).send({ message: "Ім'я відсутнє..." });
   }
 
-  const values = [
-    name,
-    req.user.userId
-  ];
+  const values = [name, req.user.userId];
 
   try {
     const { rows } = await db.query(queries.getExerciseByName(), values);
     if (rows.length) {
-      return res.status(400).send({ 'message': 'Exercise already exist' });
-    };
+      return res.status(400).send({ message: 'Така вправа уже уснує...' });
+    }
     const queryResult = await db.query(queries.createExercise(), values);
     return res.status(200).send({ queryResult: queryResult.rows[0] });
   } catch (error) {
@@ -31,7 +28,7 @@ router.get('/', Auth.verifyToken, async (req, res) => {
   try {
     const { rows } = await db.query(queries.getAllExercises(), [req.user.userId]);
     if (!rows.length) {
-      return res.status(400).send({ 'message': 'Where is no exercises yet...' });
+      return res.status(400).send({ message: 'Ще немає жодних даних...' });
     }
     return res.status(200).send({ rows });
   } catch (error) {
@@ -40,11 +37,7 @@ router.get('/', Auth.verifyToken, async (req, res) => {
 });
 
 router.put('/:id', Auth.verifyToken, async (req, res) => {
-  values = [
-    req.body.name,
-    req.params.id,
-    req.user.userId
-  ];
+  values = [req.body.name, req.params.id, req.user.userId];
   try {
     const { rows } = await db.query(queries.editExercise(), values);
     return res.send({ rows });
@@ -57,10 +50,10 @@ router.delete('/:id', Auth.verifyToken, async (req, res) => {
   try {
     await db.query(queries.deleteExercise(), [req.params.id, req.user.userId]);
 
-    res.status(200).send({ 'message': 'Exercise was successfully deleted...' })
+    res.status(200).send({ message: 'Вправа було успішно видалена...' });
   } catch (error) {
     return res.status(400).send(error);
   }
-})
+});
 
 module.exports = router;
