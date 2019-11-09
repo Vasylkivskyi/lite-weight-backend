@@ -15,7 +15,7 @@ router.post('/', Auth.verifyToken, async (req, res) => {
   try {
     const { rows } = await db.query(queries.getExerciseByName(), values);
     if (rows.length) {
-      return res.status(400).send({ message: 'Така вправа уже уснує...' });
+      return res.status(400).send({ message: 'Така вправа уже існує...' });
     }
     const queryResult = await db.query(queries.createExercise(), values);
     return res.status(200).send({ queryResult: queryResult.rows[0] });
@@ -50,7 +50,7 @@ router.delete('/:id', Auth.verifyToken, async (req, res) => {
   try {
     await db.query(queries.deleteExercise(), [req.params.id, req.user.userId]);
 
-    res.status(200).send({ message: 'Вправа було успішно видалена...' });
+    res.status(200).send({ message: 'Вправа була успішно видалена...' });
   } catch (error) {
     return res.status(400).send(error);
   }
