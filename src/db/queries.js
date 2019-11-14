@@ -4,7 +4,7 @@ const createUser = () => {
   users(first_name, last_name, email, password, created_date, modified_date)
   VALUES($1, $2, $3, $4, $5, $6)
   returning *`;
-}
+};
 
 const getUserByEmail = () => `SELECT * FROM users WHERE email = $1`;
 
@@ -18,7 +18,6 @@ WHERE id = $6
 RETURNING *`;
 
 const deleteUser = () => `DELETE FROM users WHERE id = $1 RETURNING *`;
-
 
 // EXERCISES
 const createExercise = () => `INSERT INTO
@@ -36,7 +35,6 @@ WHERE id = $2 AND owner_id = $3
 RETURNING *`;
 
 const deleteExercise = () => `DELETE FROM exercises WHERE id = $1 AND owner_id = $2 RETURNING *`;
-
 
 // SETS
 const createSet = () => `INSERT INTO
@@ -64,6 +62,4 @@ module.exports = {
   createSet,
   getLatestSets,
   deleteAllUserSets,
-}
-
-
+};
