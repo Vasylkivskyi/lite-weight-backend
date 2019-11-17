@@ -25,10 +25,11 @@ router.post('/', Auth.verifyToken, async (req, res) => {
 });
 
 router.get('/', Auth.verifyToken, async (req, res) => {
+  const { userId } = req.user;
   try {
-    const { rows } = await db.query(queries.getAllExercises(), [req.user.userId]);
+    const { rows } = await db.query(queries.getAllExercises(), [userId]);
     if (!rows.length) {
-      return res.status(400).send({ message: 'Ще немає жодних даних...' });
+      return res.status(200).send({ message: 'Ще немає жодних даних...' });
     }
     return res.status(200).send({ rows });
   } catch (error) {
