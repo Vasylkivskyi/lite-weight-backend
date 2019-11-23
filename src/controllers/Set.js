@@ -30,7 +30,7 @@ router.get('/', Auth.verifyToken, async (req, res) => {
     }
     const dayOfTheWeek = rows[0].created_date.getDate();
     const latestExercises = rows.filter((ex) => ex.created_date.getDate() === dayOfTheWeek);
-    return res.status(200).send({ latestExercises });
+    return res.status(200).send(latestExercises);
   } catch (error) {
     return res.status(400).send(error);
   }
