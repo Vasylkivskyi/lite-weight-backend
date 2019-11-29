@@ -16,8 +16,7 @@ pool.on('connect', () => {
 });
 
 const createUsersTable = () => {
-  const queryText =
-    `CREATE TABLE IF NOT EXISTS
+  const queryText = `CREATE TABLE IF NOT EXISTS
       users(
         id SERIAL NOT NULL PRIMARY KEY,
         first_name VARCHAR(128) NOT NULL,
@@ -29,7 +28,8 @@ const createUsersTable = () => {
         modified_date TIMESTAMP
       )`;
 
-  pool.query(queryText)
+  pool
+    .query(queryText)
     .then((res) => {
       console.log(res);
       pool.end();
@@ -38,11 +38,12 @@ const createUsersTable = () => {
       console.log(err);
       pool.end();
     });
-}
+};
 
 const dropUsersTable = () => {
   const queryText = 'DROP TABLE IF EXISTS users';
-  pool.query(queryText)
+  pool
+    .query(queryText)
     .then((res) => {
       console.log(res);
       pool.end();
@@ -51,7 +52,7 @@ const dropUsersTable = () => {
       console.log(err);
       pool.end();
     });
-}
+};
 
 const createExercisesTable = () => {
   const queryText = `CREATE TABLE IF NOT EXISTS
@@ -61,7 +62,8 @@ const createExercisesTable = () => {
     owner_id INTEGER NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
   )`;
-  pool.query(queryText)
+  pool
+    .query(queryText)
     .then((res) => {
       console.log(res);
       pool.end();
@@ -70,11 +72,12 @@ const createExercisesTable = () => {
       console.log(err);
       pool.end();
     });
-}
+};
 
 const dropExercisesTable = () => {
   const queryText = 'DROP TABLE IF EXISTS exercises';
-  pool.query(queryText)
+  pool
+    .query(queryText)
     .then((res) => {
       console.log(res);
       pool.end();
@@ -83,7 +86,7 @@ const dropExercisesTable = () => {
       console.log(err);
       pool.end();
     });
-}
+};
 
 const createSetsTable = () => {
   const queryText = `CREATE TABLE IF NOT EXISTS
@@ -96,7 +99,8 @@ const createSetsTable = () => {
     owner_id INTEGER NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
   )`;
-  pool.query(queryText)
+  pool
+    .query(queryText)
     .then((res) => {
       console.log(res);
       pool.end();
@@ -105,11 +109,12 @@ const createSetsTable = () => {
       console.log(err);
       pool.end();
     });
-}
+};
 
 const dropSetsTable = () => {
   const queryText = 'DROP TABLE IF EXISTS sets';
-  pool.query(queryText)
+  pool
+    .query(queryText)
     .then((res) => {
       console.log(res);
       pool.end();
@@ -118,19 +123,56 @@ const dropSetsTable = () => {
       console.log(err);
       pool.end();
     });
-}
+};
+
+const createTrainingsTable = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS
+  trainings(
+    id SERIAL NOT NULL PRIMARY KEY,
+    owner_id INTEGER NOT NULL,
+    set_id INTEGER NOT NULL,
+    created_date TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
+  )`;
+  pool
+    .query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+};
+
+const dropTrainingTable = () => {
+  const queryText = 'DROP TABLE IF EXISTS trainings';
+  pool
+    .query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+};
 
 const createAllTables = () => {
   createUsersTable();
   createExercisesTable();
   createSetsTable();
-}
+  createTrainingsTable();
+};
 
 const dropAllTables = () => {
   dropUsersTable();
   dropExercisesTable();
   dropSetsTable();
-}
+  dropTrainingTable();
+};
 
 pool.on('remove', () => {
   console.log('client removed');
@@ -142,10 +184,12 @@ module.exports = {
   createAllTables,
   createExercisesTable,
   createSetsTable,
+  createTrainingsTable,
   dropUsersTable,
   dropAllTables,
   dropExercisesTable,
   dropSetsTable,
+  dropTrainingTable,
 };
 
 require('make-runnable');
