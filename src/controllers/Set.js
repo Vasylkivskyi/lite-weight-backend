@@ -31,14 +31,12 @@ router.get('/', Auth.verifyToken, async (req, res) => {
   const { userId } = req.user;
   try {
     // s1 = owner_id limit = $2 offset = $3
-    const { rows } = await db.query(queries.getLatestSets(), [userId, 3, 3]);
-    console.log(rows);
+    const { rows } = await db.query(queries.getLatestSets(), [userId, 3, 0]);
     if (!rows.length) {
       return res.status(400).send({ message: 'Ще немає жодних даних...' });
     }
-    const dayOfTheWeek = rows[0].created_date.getDate();
-    const latestExercises = rows.filter((ex) => ex.created_date.getDate() === dayOfTheWeek);
-    return res.status(200).send(latestExercises);
+
+    return res.status(200).send(rows);
   } catch (error) {
     console.log(error);
     return res.status(400).send(error);
