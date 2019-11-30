@@ -37,15 +37,21 @@ RETURNING *`;
 const deleteExercise = () => `DELETE FROM exercises WHERE id = $1 AND owner_id = $2 RETURNING *`;
 
 // SETS
-const createSet = () => `INSERT INTO
-sets(exercise_name, reps, weight, owner_id, created_date)
-VALUES %L
-RETURNING *`;
+const saveTraining = () =>
+  `INSERT INTO trainings (owner_id, CREATEd_date) VALUES($1, $2) RETURNING id`;
 
-const getLatestSets = () => `SELECT * FROM sets
-WHERE owner_id = $1
-ORDER BY created_date DESC
-LIMIT 100`;
+const createSet = () => {
+  return `INSERT INTO 
+  sets (exercise_name, reps, weight, created_date, owner_id, training_id)
+  VALUES %L RETURNING *`;
+};
+
+const getLatestSets = () => `WITH tr AS 
+(
+    SELECT * FROM trainings WHERE owner_id = $1 GROUP BY created_date, id ORDER BY created_date DESC LIMIT $2 OFFSET $3
+)
+SELECT sets.id, sets.reps, sets.weight, sets.exercise_name, sets.training_id, sets.created_date 
+FROM sets INNER JOIN tr ON sets.training_id = tr.id ORDER BY tr.created_date desc;`;
 
 const deleteAllUserSets = () => `DELETE FROM sets WHERE owner_id = $1`;
 
@@ -62,4 +68,5 @@ module.exports = {
   createSet,
   getLatestSets,
   deleteAllUserSets,
+  saveTraining,
 };

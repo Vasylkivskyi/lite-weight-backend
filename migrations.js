@@ -97,6 +97,7 @@ const createSetsTable = () => {
     weight SMALLINT,
     created_date TIMESTAMP,
     owner_id INTEGER NOT NULL,
+    training_id INTEGER NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
   )`;
   pool
@@ -130,7 +131,6 @@ const createTrainingsTable = () => {
   trainings(
     id SERIAL NOT NULL PRIMARY KEY,
     owner_id INTEGER NOT NULL,
-    set_id INTEGER NOT NULL,
     created_date TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE
   )`;
