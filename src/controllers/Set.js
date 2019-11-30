@@ -35,8 +35,13 @@ router.get('/', Auth.verifyToken, async (req, res) => {
     if (!rows.length) {
       return res.status(400).send({ message: 'Ще немає жодних даних...' });
     }
-
-    return res.status(200).send(rows);
+    const ids = rows.map((row) => row.training_id);
+    const distinctIds = [...new Set(ids)];
+    const sortedTraining = distinctIds.map((id) => {
+      const training = rows.filter((row) => id === row.training_id);
+      return training;
+    });
+    return res.status(200).send(sortedTraining);
   } catch (error) {
     console.log(error);
     return res.status(400).send(error);
