@@ -28,10 +28,15 @@ router.post('/', Auth.verifyToken, async (req, res) => {
 });
 
 router.get('/', Auth.verifyToken, async (req, res) => {
-  const { userId } = req.user;
   try {
-    // s1 = owner_id limit = $2 offset = $3
-    const { rows } = await db.query(queries.getLatestSets(), [userId, 3, 0]);
+    const { userId } = req.user;
+    let page = req.headers['page'];
+    if (page < 1) {
+      page = 1;
+    }
+    const limit = 3;
+    const offset = page * limit;
+    const { rows } = await db.query(queries.getLatestSets(), [userId, limit, offset]);
     if (!rows.length) {
       return res.status(400).send({ message: 'Ще немає жодних даних...' });
     }
