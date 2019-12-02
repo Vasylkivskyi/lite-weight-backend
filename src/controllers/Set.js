@@ -34,8 +34,8 @@ router.get('/', Auth.verifyToken, async (req, res) => {
     if (page < 1) {
       page = 1;
     }
-    const limit = 3;
-    const offset = page * limit;
+    const limit = 5;
+    const offset = (page - 1) * limit;
     const { rows } = await db.query(queries.getLatestSets(), [userId, limit, offset]);
     if (!rows.length) {
       return res.status(400).send({ message: 'Ще немає жодних даних...' });

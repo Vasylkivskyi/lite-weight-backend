@@ -50,7 +50,8 @@ const getLatestSets = () => `WITH tr AS
 (
     SELECT * FROM trainings WHERE owner_id = $1 GROUP BY created_date, id ORDER BY created_date DESC LIMIT $2 OFFSET $3
 )
-SELECT sets.id, sets.reps, sets.weight, sets.exercise_name, sets.training_id, sets.created_date 
+SELECT sets.id, sets.reps, sets.weight, sets.exercise_name, sets.training_id, sets.created_date,
+(SELECT count(*) FROM trainings WHERE owner_id = $1) as amount
 FROM sets INNER JOIN tr ON sets.training_id = tr.id ORDER BY tr.created_date desc;`;
 
 const deleteAllUserSets = () => `DELETE FROM sets WHERE owner_id = $1`;
